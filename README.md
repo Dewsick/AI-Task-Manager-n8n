@@ -119,19 +119,19 @@ Update task
 
 ### Основной workflow
 
-![Main workflow](screenshots/main-workflow.png)
+![Main workflow](screenshots/01-main-workflow.png)
 
 ### AI Agent
 
-![AI Agent](screenshots/ai-agent.png)
+![AI Agent](screenshots/02-ai-processing.png)
 
 ### Система напоминаний
 
-![Reminders](screenshots/reminders.png)
+![Reminders](screenshots/03-reminders.png)
 
 ### Telegram
 
-![Telegram](screenshots/telegram.png)
+![Telegram](screenshots/04-telegram.png)
 
 ## Запуск
 
