@@ -1,0 +1,1409 @@
+{
+  "name": "AI Task Manager",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Текущий момент:\n{{ $now.setZone('Europe/Moscow').format('yyyy-MM-dd HH:mm') }}\n\nЧасовой пояс:\nEurope/Moscow (Московское время, UTC+3).\n\nВсе даты и время необходимо определять и вычислять исключительно по часовому поясу Europe/Moscow.\nНе используй часовой пояс сервера, браузера или другой часовой пояс.\n\nТы — AI Task Manager.\n\nПреобразуй следующее сообщение пользователя в структурированную задачу:\n\n{{ $json.message }}\n\nОпредели:\n\n1. task — краткое описание задачи без лишних слов.\n2. priority — приоритет задачи:\n   - low\n   - normal\n   - high\n3. date — Правила определения даты:\n\n- Если пользователь указывает конкретную дату, определи её и запиши в формате YYYY-MM-DD.\n- Если пользователь использует относительную дату, например \"сегодня\", \"завтра\", \"послезавтра\", определи соответствующую дату относительно текущего момента в часовом поясе Europe/Moscow.\n- Если пользователь указывает относительное время \"через N минут\", \"через N часов\" или аналогичную конструкцию, дата должна быть определена автоматически на основе получившегося момента времени.\n- Если относительное время приводит к следующему календарному дню, используй дату следующего дня.\n- Только если из сообщения действительно невозможно определить дату, используй null.\n\n4. time — Правила определения времени:\n\n- Если пользователь указывает конкретное время, например \"в 15:00\", \"в 8 утра\", \"в 12 часов\", запиши его в формате HH:mm.\n- Если пользователь указывает относительное время, например \"через 2 минуты\", \"через 30 минут\", \"через час\", вычисли конкретное время относительно текущего момента в часовом поясе Europe/Moscow.\n- Если время не указано и его невозможно определить из сообщения, используй null.\n- Все значения времени должны соответствовать Московскому времени (Europe/Moscow).\n\n5. category — одна из категорий:\n   - Финансы\n   - Работа\n   - Учёба\n   - Здоровье\n   - Покупки\n   - Личное\n   - Другое\n\nВерни результат строго как обычный JSON-объект.\n\nФормат:\n{\n  \"task\": \"краткое описание задачи\",\n  \"priority\": \"low или normal или high\",\n  \"date\": \"YYYY-MM-DD или null\",\n  \"time\": \"HH:mm или null\",\n  \"category\": \"одна из разрешённых категорий\"\n}\n\nНе используй Markdown.\nНе используй ```json.\nНе добавляй пояснения.\nНе добавляй поле output.\nВерни только JSON-объект.\n\nЕсли пользователь явно указывает срочность, учитывай её при определении priority.\n\nЕсли дата не указана, используй null.\n\nЕсли время не указано, используй null.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        464,
+        80
+      ],
+      "id": "1a896a44-1bad-4600-ac00-631483a2bdab",
+      "name": "AI Agent",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "task": "={{ $json.task }}",
+            "priority": "={{ $json.priority }}",
+            "date": "={{ $json.date }}",
+            "time": "={{ $json.time }}",
+            "category": "={{ $json.category }}",
+            "status": "Активная",
+            "notified": false,
+            "chat_id": "={{ $('inputdata').item.json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "notified",
+              "displayName": "notified",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        944,
+        -48
+      ],
+      "id": "9bdfbcdc-4cff-4dc4-98e7-1dfb70c366a2",
+      "name": "Insert row",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -336
+      ],
+      "id": "86eab721-a09f-4e3d-92d0-e7654e506c68",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -144,
+        16
+      ],
+      "id": "268da8b8-a821-4e61-848d-0fa7ab702117",
+      "name": "Telegram Trigger",
+      "webhookId": "7bd38a1c-95c4-44f7-b0c7-261765354d83",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "770c9fc2-ffff-4d79-96f8-b3193a93e4e7"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fde4082c-fc3c-4bf0-ae3d-47d77af9657a",
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "/help",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "be759bc4-1b08-4b3b-bfed-32e750bb6150",
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "/delete",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8dc63d1f-244e-4efc-a3b3-3f3cde4ec3f6",
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "/today",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dcc1b85c-2df8-4aec-ba72-955300ac204b",
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "/tasks",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d92ed3e3-4838-4970-8338-5704c7f23faf",
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "/done",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -144,
+        -592
+      ],
+      "id": "fe930655-aef1-4698-9081-6968a9891785",
+      "name": "operations"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aba690b1-b322-40c4-b486-11ba14a55e0e",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "5b1cf443-5b74-40a0-ac5a-e32b1401beaf",
+              "name": "id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        80,
+        128
+      ],
+      "id": "08d061d6-a34d-47a8-a1d7-c2069514b091",
+      "name": "inputdata",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f6bfb3f5-49f2-4dfd-835e-13185dce160b",
+              "name": "taskNumber",
+              "value": "={{ $json.message.split(' ')[1] ? Number($json.message.split(' ')[1]) : null }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        240,
+        -192
+      ],
+      "id": "54d499f5-6ca0-4bae-8350-acc3346478ae",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        -192
+      ],
+      "id": "265c51ab-3ea9-4080-b697-375999e252d9",
+      "name": "Get row(s)1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6a312032-36bb-4a0d-a554-246507b11242",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        -176
+      ],
+      "id": "0c2abc23-e7da-41c2-ad0a-d2732cb4ac1f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "=✅ Задача выполнена  \n\n{{ $json.task }}\n\n📅 {{ $json.date }} в {{ $json.time }}\n📌 {{ $json.priority }}\n🏷 {{ $json.category }}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        -272
+      ],
+      "id": "fd014b10-39a1-46bf-a65c-eff2de53be2b",
+      "name": "Send a text message1",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $json.rowId }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "Выполнена"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "notified",
+              "displayName": "notified",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        -272
+      ],
+      "id": "215f79c1-1089-4cfc-9582-c26ac9f54fa7",
+      "name": "Update row(s)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst taskNumber = Number(\n  $('Edit Fields').first().json.taskNumber\n);\n\nif (!taskNumber || Number(taskNumber) < 1) {\n  return [{\n    json: {\n      found: false,\n      message: '❌ Укажите номер задачи. Например: /done 2'\n    }\n  }];\n}\n\nconst activeTasks = items.filter(\n  item => item.json.status === 'Активная'\n);\n\nconst task = activeTasks[taskNumber - 1];\n\nif (!task) {\n  return [{\n    json: {\n      found: false,\n      message: `❌ Задача №${taskNumber} не найдена.`\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    found: true,\n    rowId: task.json.id,\n    taskNumber: taskNumber,\n    task: task.json.task\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -176
+      ],
+      "id": "e9659ca4-404d-4f39-811f-954318153a0b",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "={{ $json.message }}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        -144
+      ],
+      "id": "ac2ef089-f7bb-4fb8-969c-e6acb2f9d850",
+      "name": "Send a text message3",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        464,
+        320
+      ],
+      "id": "9b32b750-367a-46ef-93a4-e9d405635fc6",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "rpuReqHdqRgZEWlg",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8c4fc0f-a293-4864-85a9-c65b377d330a",
+              "name": "taskId",
+              "value": "={{ $json.message.split(' ')[1] ? Number($json.message.split(' ')[1]) : null }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        240,
+        -608
+      ],
+      "id": "f8cd4ecd-7a09-4e85-b926-1fb7e3aacc6f",
+      "name": "delete"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9771a67a-baca-42d4-9f16-d2ffa7c0bb8f",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        -608
+      ],
+      "id": "04810402-01ca-4aeb-849e-2d0134e050d5",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $json.rowId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        -720
+      ],
+      "id": "11a0739b-4667-4d0c-87a3-52b7b36f6738",
+      "name": "Delete row(s)"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        -608
+      ],
+      "id": "c479a537-3bb7-4b1d-b39a-7a0702b2e76a",
+      "name": "Get_delete_row"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        -464
+      ],
+      "id": "702e4777-d874-4d16-b78d-f1f463c88b84",
+      "name": "Get row(s)2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "=❌ Неизвестная команда.\n\nДоступные команды:\n/start\n/tasks\n/today\n/done N\n/delete [ID]\n/help",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "64034adf-79ee-4cf1-8fcc-28652242663d",
+      "name": "Send a text message9",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn items.map(item => {\n  let output = item.json.output;\n  \n\n  try {\n    if (typeof output === 'string') {\n      output = output\n        .replace(/```json\\s*/gi, '')\n        .replace(/```\\s*/g, '')\n        .trim();\n\n      output = JSON.parse(output);\n    }\n\n    if (!output || typeof output !== 'object') {\n      throw new Error('AI вернул некорректный формат');\n    }\n\n    return {\n      json: {\n        task: output.task ?? null,\n        priority: output.priority ?? 'normal',\n        date: output.date ?? null,\n        time: output.time ?? null,\n        category: output.category ?? 'Другое'\n      }\n    };\n\n  } catch (error) {\n    throw new Error('Не удалось распознать ответ AI Agent');\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        0
+      ],
+      "id": "830fec31-b995-4bc4-a94c-c25671e05538",
+      "name": "parser",
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "=Создайте напоминание. Например \"сегодня в 13 00 родительское собрание\". Помощь по командам /help",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        -928
+      ],
+      "id": "5ec90303-e69e-4a58-a357-0ff9852a1661",
+      "name": "start message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "=🤖 AI Task Manager\n\nКоманды:\n\n/start — начать работу\n/tasks — все активные задачи\n/today — задачи на сегодня\n/done N — выполнить задачу №N\n/delete — удалить выполненные задачи\n/delete ID — удалить задачу по ID\n/help — список команд\n\nБот автоматически определяет:\n• задачу\n• приоритет\n• дату\n• время\n• категорию\n\nЕсли время не указано, бот назначает случайное время для напоминания вечером.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        -752
+      ],
+      "id": "9b14cd70-0b9d-4910-ad20-dc0bc783e783",
+      "name": "help message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').first().json.id }}",
+        "text": "=🗑 Задача удалена:\n\n{{ $json.task }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -752
+      ],
+      "id": "2978a54a-c3e1-4f2f-8f92-e5e2a9545761",
+      "name": "delete message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "={{ $json.message }}\n\nЕсли ходите удалить что-то конекретное воспользуйтесь командой /tasks чтобы посмотреть список доступных задач. Задем выбраную команду можно удалить командой /delete N где N номер задачи. ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        -608
+      ],
+      "id": "3982a5d4-fe89-4a9d-9938-1de2a4882b9b",
+      "name": "delete error message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "={{ $json.message }}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        -480
+      ],
+      "id": "b8e2ba3e-544c-4b50-a3be-c01b2b7fcbea",
+      "name": "today message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        -352
+      ],
+      "id": "19f23ade-f262-43d7-aa8c-b6db335c915d",
+      "name": "tasks message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst rawTaskId = $('delete').first().json.taskId;\n\nif (rawTaskId !== null && rawTaskId !== undefined) {\n  const taskId = Number(rawTaskId);\n\n  if (Number.isNaN(taskId)) {\n    return [{\n      json: {\n        found: false,\n        message: '❌ ID задачи должен быть числом.'\n      }\n    }];\n  }\n\n  for (const item of items) {\n    if (String(item.json.id) === String(taskId)) {\n      return [{\n        json: {\n          found: true,\n          deleteMode: 'single',\n          rowId: item.json.id,\n          task: item.json.task\n        }\n      }];\n    }\n  }\n\n  return [{\n    json: {\n      found: false,\n      message: `❌ Задача с ID ${taskId} не найдена.`\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        -624
+      ],
+      "id": "f4bcd392-ad87-4192-8101-6c8a1cde2b5e",
+      "name": "Code delete",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst today = new Date()\n  .toLocaleDateString('en-CA', {\n    timeZone: 'Europe/Moscow'\n  });\n\nconst tasks = items\n  .filter(item => {\n    const task = item.json;\n\n    return (\n      task.status === 'Активная' &&\n      task.date === today\n    );\n  })\n  .map((item, index) => {\n    const task = item.json;\n\n    return `ID: ${task.id}. ${task.task}\n📅 ${task.date || 'Без даты'}${task.time ? ` в ${task.time}` : ''}\n📌 ${task.priority}\n🏷 ${task.category}`;\n\nreturn [{\n  json: {\n    message: tasks.length\n      ? `📅 Задачи на сегодня:\\n\\n${tasks.join('\\n\\n')}`\n      : '📅 На сегодня активных задач нет.'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -464
+      ],
+      "id": "8fb348e5-0647-4403-958a-6f5d60fbbb68",
+      "name": "Code today"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [{\n    json: {\n      message: '📋 Задач пока нет.'\n    }\n  }];\n}\n\nconst tasks = items\n  .filter(item => item.json.status === 'Активная')\n  .map((item) => {\n    const task = item.json;\n\n    return `ID: ${task.id}. ${task.task}\n📅 ${task.date || 'Без даты'}${task.time ? ` в ${task.time}` : ''}\n📌 ${task.priority}\n🏷 ${task.category}`;\n  });\n\nreturn [{\n  json: {\n    message: tasks.length\n      ? `📋 Активные задачи:\\n\\n${tasks.join('\\n\\n')}`\n      : '📋 Активных задач нет.'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        -336
+      ],
+      "id": "bf214fa5-5b5a-4de2-a797-6aec1ae9a382",
+      "name": "Code tasks"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "=Ошибка агента",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        208
+      ],
+      "id": "c81fe4fe-bd52-47c5-9bb0-69c1aeeeeb31",
+      "name": "error agent message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "={{ $json.error }} \nПопробуйте еще раз или другой запрос",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1008,
+        128
+      ],
+      "id": "d19c661c-8c14-4a75-b229-ce129cfe445f",
+      "name": "error",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('inputdata').item.json.id }}",
+        "text": "=Задача:  {{ $json.task }}\nСтатус: {{ $json.status }}\nДата: {{ $json.date }} Время: {{ $json.time }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1152,
+        -32
+      ],
+      "id": "8386c69b-63a5-47d8-a07d-48059bcf472b",
+      "name": "insert message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "87260aba-f72e-4be8-8b61-8ea7114b1c44",
+              "leftValue": "={{ $json.message }}",
+              "rightValue": "/",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        112
+      ],
+      "id": "af701807-1a58-4b74-9dde-1de0349239e0",
+      "name": "/ or not"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "parser",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "error agent message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Code tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "inputdata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "operations": {
+      "main": [
+        [
+          {
+            "node": "start message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "help message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "delete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s)2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "inputdata": {
+      "main": [
+        [
+          {
+            "node": "/ or not",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row(s)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "insert message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete": {
+      "main": [
+        [
+          {
+            "node": "Get_delete_row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Delete row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "delete error message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_delete_row": {
+      "main": [
+        [
+          {
+            "node": "Code delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete row(s)": {
+      "main": [
+        [
+          {
+            "node": "delete message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)2": {
+      "main": [
+        [
+          {
+            "node": "Code today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parser": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code delete": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code today": {
+      "main": [
+        [
+          {
+            "node": "today message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code tasks": {
+      "main": [
+        [
+          {
+            "node": "tasks message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/ or not": {
+      "main": [
+        [
+          {
+            "node": "operations",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a722c5e3-de68-4312-a729-c23df1702e03",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3f5c53e696c94e82a3a773d31d08f47153be9fb605f0ee5a37fca5bc841ec9f"
+  },
+  "nodeGroups": [],
+  "id": "Xn0LaohM4K3UqEEQ",
+  "tags": []
+}

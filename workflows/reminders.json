@@ -1,0 +1,532 @@
+{
+  "name": "reminders",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c0d9cc35-a61a-49ea-8ce3-056b489b226a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "ace99bd4-d6ea-4651-b385-98a3ccde9623",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "befb32a4-3443-47bd-9bbf-e4ec7b036311",
+              "name": "message",
+              "value": "={{ `⏰ Напоминание\n\n${$json.task}\n📅 ${$json.date}${$json.time ? ` в ${$json.time}` : ''}\n📌 Приоритет: ${$json.priority}\n🏷 ${$json.category}` }}",
+              "type": "string"
+            },
+            {
+              "id": "7307d521-aade-4655-9e60-4440ba58ae5c",
+              "name": "chat_id",
+              "value": "={{ $json.chat_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        912,
+        -96
+      ],
+      "id": "88ad70c1-2949-42fe-9e99-df34500908b6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1136,
+        -96
+      ],
+      "id": "4930254d-4028-4296-8bb9-29e211518549",
+      "name": "Send a text message",
+      "webhookId": "6927f3f4-5634-49c7-b1fd-fddf0947f325",
+      "credentials": {
+        "telegramApi": {
+          "id": "4u4RiWcFNHggKxvH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $('Code').item.json.id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "notified": true
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "notified",
+              "displayName": "notified",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "0d4d6e62-3351-4d57-aedb-427ab3011a2a",
+      "name": "Update row(s)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst now = new Date();\nconst result = [];\n\nfor (const item of items) {\n  const task = item.json;\n\n  if (task.status !== 'Активная') continue;\n  if (task.notified === true) continue;\n  if (!task.date) continue;\n\n  let reminderTime = task.reminder_time || task.time;\n  let needsReminderTime = false;\n\n  // Если пользователь не указал время\n  // и случайное время ещё не было сохранено\n  if (!task.time && !task.reminder_time) {\n    const start = 18 * 60;\n    const end = 22 * 60;\n\n    const randomMinutes =\n      start + Math.floor(Math.random() * (end - start + 1));\n\n    const hours = Math.floor(randomMinutes / 60);\n    const minutes = randomMinutes % 60;\n\n    reminderTime =\n      `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;\n\n    needsReminderTime = true;\n  }\n\n  const taskDate = new Date(\n    `${task.date}T${reminderTime}:00+03:00`\n  );\n\n  if (Number.isNaN(taskDate.getTime())) continue;\n\n  result.push({\n    json: {\n      ...task,\n      reminder_time: reminderTime,\n      needs_reminder_time: needsReminderTime,\n      reminder_due: taskDate <= now\n    }\n  });\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "c69f0a9b-8d60-43d9-b983-28c037ba62c5",
+      "name": "Code",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "83baddce-13e3-4118-88ec-f9db7330bac9",
+              "leftValue": "={{ $json.reminder_due }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        688,
+        0
+      ],
+      "id": "cfb75cc3-0686-4200-b5c2-a31285ea159a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a6002239-a995-4797-a839-4b2af4168138",
+              "leftValue": "={{ $json.needs_reminder_time }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        912,
+        160
+      ],
+      "id": "941029e8-d04f-406a-b92e-c1a07e710618",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "QgiBjcJCFMMykjZR",
+          "mode": "list",
+          "cachedResultName": "AI Task",
+          "cachedResultUrl": "/projects/YMmlNDQJoRjNeSqb/datatables/QgiBjcJCFMMykjZR"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $('Code').item.json.id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "notified": false,
+            "reminder_time": "={{ $json.reminder_time }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "time",
+              "displayName": "time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "notified",
+              "displayName": "notified",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "reminder_time",
+              "displayName": "reminder_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1168,
+        80
+      ],
+      "id": "20a88e0f-c152-49f1-8d06-3c2ab81c1fe6",
+      "name": "Update row(s)1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row(s)": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2eb7c813-c6f7-4d16-8f7f-b91e780235f8",
+  "meta": {
+    "instanceId": "a3f5c53e696c94e82a3a773d31d08f47153be9fb605f0ee5a37fca5bc841ec9f"
+  },
+  "nodeGroups": [],
+  "id": "fgj3frZEiWULEpEH",
+  "tags": []
+}
